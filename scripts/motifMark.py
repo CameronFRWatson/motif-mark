@@ -66,7 +66,8 @@ class gene:
     def __init__(self, record, motifs):
         '''
         initializes an instance of gene. Takes a fasta record in list form: [header,seq]
-        Isolates the record name, obtains coordinates for introns and exons
+        automatically isolates the record name, obtains coordinates for introns and exons,
+        and determines locations of motifs upon instantiation
         '''
         self.longName = re.split(">", record[0])[1] # ditch the greater than sign
         self.name = re.split(" ", self.longName)[0] # isolate gene name
@@ -102,15 +103,17 @@ class gene:
         for nuc in range(len(self.seq)): # iterates through each base in seq
             for mot in self.motifs: # for each base, iterate through each motif (O(n*m))
                 mLen = self.motifs[mot]
-                if (len(self.seq) - counter) > (mLen -1): # prevents indexing past length of seq
+                # prevent indexing past length of seq
+                if (len(self.seq) - counter) > (mLen -1): 
                     if re.fullmatch(mot, self.seq[nuc:(nuc+mLen)]):
-                        # dict: (start pos, stop pos): [motif1, any perfectly overlapping motifs]
+                        # dict: (start pos, stop pos): [motifs w/exact coords]
                         if (nuc,(nuc+mLen)) in tempMotif_dict:
                             tempMotif_dict[(nuc,(nuc+mLen))].append(mot)
                         else:
                             tempMotif_dict[(nuc,(nuc+mLen))] = [mot]
             counter += 1
-        self.motifs = tempMotif_dict # writing over motif attribute w/new coordinate dict
+        # writing over motif attribute w/new coordinate dict
+        self.motifs = tempMotif_dict 
         return self
 
     def sequencePurge(self):
@@ -273,6 +276,7 @@ def draw(recList, name, motDict):
     context = addMotifs(context, recList, dimensions, colors)
     context = addLegend(context, motDict, colors)
     surface.finish() # export svg with fully rendered context
+    return None
 
 #--------------------------------------------------------------------------------------------------------------
 # MAIN
