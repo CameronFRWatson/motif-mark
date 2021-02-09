@@ -25,3 +25,5 @@ The program can be called from the command-line with two flags for the input fil
 ### Example Input
 
 ### Example Output
+
+![](./output/Figure_1.svg)
