@@ -145,7 +145,7 @@ def addRegions(ctx, recs, dims):
         prev_loc = lnSpacing * spaceIter
         for exon in rec.exons: # add exons over introns
             ctx.set_line_width(0.05)
-            start, stop = exon[0], exon[1]
+            start, stop = exon[0], exon[1] # exon coordinates, to be scaled by image width
             ctx.move_to((start/width + 0.01), lnSpacing * spaceIter)
             ctx.line_to((stop/width + 0.01), lnSpacing * spaceIter)
             ctx.stroke()
@@ -190,8 +190,10 @@ def addMotifs(ctx, recs, dims, colors):
     spaceIter = 1
     for rec in recs:
         for key in rec.motifs:
+            # new color for each motif
             color = colors[rec.motifs[key][0]]
             ctx.set_source_rgba(color[0], color[1], color[2], 0.7)
+            # places motifs on gene same way as exons
             start, stop = key[0], key[1]
             ctx.move_to((start/width + 0.01), lnSpacing * spaceIter)
             ctx.line_to((stop/width + 0.01), lnSpacing * spaceIter)
@@ -204,32 +206,33 @@ def addLegend(ctx, motDict, colors):
     '''
     called by draw function; adds motif/color legend in bottom right corner of figure
     '''
-    ctx.move_to(.777,.56)
+    ctx.move_to(.777,.56) # Legend title
     ctx.set_font_size(.03)
     ctx.set_source_rgb(0,0,0)
     ctx.select_font_face("Calibri")
     ctx.show_text("Legend")
-    jitter = 0.03
-    # intron labels
-    ctx.set_line_width(0.008)
+    
+    ctx.set_line_width(0.008) # intron labels
     ctx.move_to(0.78, 0.58)
     ctx.line_to(0.8, 0.58)
     ctx.stroke()
     ctx.set_font_size(.02)
     ctx.move_to(0.82, 0.59)
     ctx.show_text("Introns")
-    # exon labels
-    ctx.set_line_width(0.02)
+    
+    ctx.set_line_width(0.02) # exon labels
     ctx.move_to(0.78, 0.606)
     ctx.line_to(0.8, 0.606)
     ctx.stroke()
     ctx.move_to(0.82, 0.616)
     ctx.show_text("Exons")
-    for i in motDict:
+
+    jitter = 0.03 # dictates block spacing
+    for i in motDict: # motif labels with block indicating motif color
         # block colors
         color = colors[motDict[i]]
         ctx.set_source_rgb(color[0], color[1], color[2])
-        # legend block size and location
+        # block size and location
         ctx.set_line_width(0.02)
         ctx.move_to(0.78, 0.606+jitter)
         ctx.line_to(0.8, 0.606+jitter)
@@ -257,7 +260,7 @@ def draw(recList, name, motDict):
     height = (width*0.75)
     surface = cairo.SVGSurface(name, width, height)
     context = cairo.Context(surface)
-    dimensions = [width, height, lnSpacing]
+    dimensions = [width, height, lnSpacing] # var to pass to context updating functions
     # scaling so everything is 0-1
     context.scale(width, height)
     # background color
@@ -269,7 +272,7 @@ def draw(recList, name, motDict):
     colors = getColors(motDict)
     context = addMotifs(context, recList, dimensions, colors)
     context = addLegend(context, motDict, colors)
-    surface.finish()
+    surface.finish() # export svg with fully rendered context
 
 #--------------------------------------------------------------------------------------------------------------
 # MAIN
@@ -289,18 +292,18 @@ fasta_fh = open(args.fasta, "r")
 
 # iterate through fasta file 
 ln = 0
-current_record = [None,""]
+current_record = [None,""] # initialize list to store records [header,sequence]
 record_export = []
 for line in fasta_fh:
-    if ln == 0:
+    if ln == 0: # captures first line
         current_record[0] = line.strip("\n")
-    elif re.match("^>", line):
+    elif re.match("^>", line): # captures all subsequent header lines
         current_record = gene(current_record, reg_motifs)
         current_record = current_record.sequencePurge() # remove seq from memory, no longer needed
         record_export.append(current_record)
         current_record = [None,""] # reset and restart for next record
         current_record[0] = line.strip("\n")
-    else:
+    else: # sequence lines
         current_record[1] += line.strip("\n")
     ln += 1
 
@@ -316,7 +319,7 @@ fasta_fh.close()
 prefix = re.split("\.", args.fasta)[0]
 outName = prefix + ".svg"
 
-# drawing output
+# drawing output, automatically exported as svg
 
 draw(record_export, outName, saved_motifs)
 
