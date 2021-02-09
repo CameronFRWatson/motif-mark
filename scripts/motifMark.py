@@ -320,8 +320,13 @@ fasta_fh.close()
 
 # output naming and calling draw functions
 
-prefix = re.split("\.", args.fasta)[0]
-outName = prefix + ".svg"
+if "C:\\" in args.fasta: # Windows paths
+    basename = re.split("\\", args.fasta)[-1]
+else: # Mac/linux paths
+    basename = re.split("/", args.fasta)[-1]
+
+prefix = re.split("\.", basename)[0]
+outName = "./" + prefix + ".svg"
 
 # drawing output, automatically exported as svg
 
