@@ -16,6 +16,13 @@ Cameron Watson
 
 The program can be called from the command-line with two flags for the input files:
 
+| Flag | Verbose flag | Argument |
+| :---: | :---: | :---: |
+| -f | --fasta | input fasta file |
+| -m | --motif | input motif file |
+
+Example:
+
 ```
 ./motifMark.py -f input.fasta -m motifs.txt
 ```
