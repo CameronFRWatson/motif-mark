@@ -20,10 +20,36 @@ The program can be called from the command-line with two flags for the input fil
 ./motifMark.py -f input.fasta -m motifs.txt
 ```
 
-*current work in progress*
-
 ### Example Input
 
+FASTA records with capitalization denoting exons (see *inputs/Figure_1.fasta*):
+
+```
+>MBNL chr3:152446461-152447003 
+tgtaattaactacaaagaggagttatcctcccaataacaactcagtagtgcctttattgt
+gcatgcttagtcttgttattcgttgtatatggcattccgatgatttgtttttttatttgt
+tttttctcacctacccaaaaatgcactgctgcccccatgatgcacctctgcttgctgttt
+atgttaatgcgcttgaaccccactggcccattgccatcatgtgctcgctgcctgctaatt
+aagACTCAGTCGGCTGTCAAATCACTGAAGCGACCCCTCGAGGCAACCTTTGACCTGgta
+ctatgacctttcaccttttagcttggcatgtagctttattgtagatacaagttttttttt
+taaatcaactttaaaatatatatccttttttctgttatagagttgtaaagtacaatgaaa
+aaactgagtgtggtttcctgacaaaattagtagaaagactataatctaagtacatagatg
+gatatcatacaataaaagattctgaaagcccagcagcccacattcagtttaactacattg
+tag
+
+```
+
+Motifs with degenerate bases in one column (see *inputs/Fig_1_motifs.txt*):
+
+```
+ygcy
+GCAUG
+catag
+YYYYYYYYYY
+```
+
 ### Example Output
+
+The output figure will be saved to the working directory under the same name as the input FASTA file.
 
 ![](./output/Figure_1.svg)
