@@ -137,7 +137,7 @@ def addRegions(ctx, recs, dims):
         ctx.set_source_rgb(0,0,0)
         ctx.set_line_width(0.008)
         ctx.move_to(0.01,lnSpacing * spaceIter)
-        ctx.line_to((rec.seqLen / width), lnSpacing * spaceIter)
+        ctx.line_to((rec.seqLen / width) + 0.01, lnSpacing * spaceIter)
         ctx.stroke()
         # finding halfway between two genes for the labels (labels above gene)
         label_location = np.mean([(lnSpacing*spaceIter),prev_loc])
